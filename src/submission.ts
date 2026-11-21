@@ -61,7 +61,7 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User | P
 
 	logger.debug("correct emoji");
 
-	let member: GuildMember | null | undefined = reaction.message.guild?.members.cache.get(user.id);
+	let member: GuildMember | null | undefined = await reaction.message.guild?.members.fetch(user.id).catch(() => null);
 	if (!member) return;
 
 	logger.debug("member ", member);
@@ -186,6 +186,8 @@ function createFile(msg: Message | PartialMessage, subDirectory: "suggestion" | 
 		"link": msgLink,
 		"type": subDirectory,
 		"author": msg.author?.tag,
+        // NOTE: message.content is empty here without the MESSAGE_CONTENT intent due to the ROLE mention.
+        // Submissions are stored by without the text.
 		"msg": msg.content
 	};
 	fs.writeFile("./data/" + subDirectory + "s/" + msgTitle, JSON.stringify(msgJson, null, 4), function (err) {

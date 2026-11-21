@@ -24,7 +24,7 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User | P
 
 	logger.debug("reaction emoji: " + reaction.emoji.name?.toString());
 
-	let member: GuildMember | null | undefined = reaction.message.guild?.members.cache.get(user.id);
+	let member: GuildMember | null | undefined = await reaction.message.guild?.members.fetch(user.id).catch(() => null);
 	if (!member) return;
 	logger.debug("reactor is a valid guild member.. iterating configured messages")
 
